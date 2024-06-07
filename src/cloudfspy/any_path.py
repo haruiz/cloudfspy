@@ -1,6 +1,8 @@
 import os
 import typing
-from pathlib import Path as _Path_, _windows_flavour, _posix_flavour
+from pathlib import _posix_flavour  # type: ignore
+from pathlib import _windows_flavour  # type: ignore
+from pathlib import Path as _Path_
 
 if typing.TYPE_CHECKING:
     from . import GenericPath
@@ -19,7 +21,7 @@ class AnyPath(_Path_):
         self,
         destination: typing.Union[str, "GenericPath", "CloudPath"],
         *args,
-        **kwargs
+        **kwargs,
     ) -> "CloudPath":
         """
         Upload a file to a destination.
@@ -31,7 +33,7 @@ class AnyPath(_Path_):
         self,
         destination: typing.Union[str, "GenericPath", "LocalPath"],
         *args,
-        **kwargs
+        **kwargs,
     ) -> "LocalPath":
         """
         Download a file to a destination.

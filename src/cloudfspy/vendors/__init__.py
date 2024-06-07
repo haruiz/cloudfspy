@@ -1,2 +1,3 @@
-from .azure import AzCloudPath
 from .gcp import GCPCloudPath
+
+__all__ = ["GCPCloudPath"]

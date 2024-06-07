@@ -4,10 +4,10 @@ from .any_path import AnyPath
 
 if typing.TYPE_CHECKING:
     from .cloud_path import CloudPath
+    from .generic_path import GenericPath
 
 
 class LocalPath(AnyPath):
-
     def __init__(self, *args, **kwargs):
         """
         Constructor
@@ -24,7 +24,10 @@ class LocalPath(AnyPath):
         return super().exists()
 
     def upload_to(
-        self, destination: typing.Union[str, "CloudPath"], *args, **kwargs
+        self,
+        destination: typing.Union[str, "GenericPath", "CloudPath"],
+        *args,
+        **kwargs,
     ) -> "CloudPath":
         """
         Upload a file to a destination.

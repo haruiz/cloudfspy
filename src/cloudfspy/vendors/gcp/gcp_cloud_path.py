@@ -5,17 +5,17 @@ from io import BytesIO
 from pathlib import Path
 
 import requests
-from tqdm import tqdm
-
-from cloudfspy import CloudPath, CloudPathFactory
-from cloudfspy.decorators import gcp_exception
+from cloudfspy import CloudPath
+from cloudfspy import CloudPathFactory
+from cloudfspy.decor import gcp_exception
+from tqdm import tqdm  # type: ignore
 
 log = logging.getLogger("rich")
 
 try:
-    from google.cloud import storage
-    from google.cloud.storage import Bucket
-    import google.cloud.storage.constants as StorageApiConstants
+    from google.cloud import storage  # type: ignore
+    from google.cloud.storage import Bucket  # type: ignore
+    import google.cloud.storage.constants as StorageApiConstants  # type: ignore
 except ImportError:
     raise ImportError(
         "Please install google-cloud-storage using pip install google-cloud-storage"
@@ -28,7 +28,7 @@ class GCPCloudPath(CloudPath):
     This class creates a GCP CloudFile object from a path.
     """
 
-    def __init__(self, cloud_path: str) -> None:
+    def __init__(self, cloud_path: str, *args, **kwargs) -> None:
         """
         Constructor
         :param cloud_path: Cloud path
@@ -38,10 +38,9 @@ class GCPCloudPath(CloudPath):
         self._client = storage.Client()
 
     @property
-    def bucket(self):
+    def bucket(self) -> Bucket:
         """
-        Get the bucket name
-        :return: Bucket name
+        Get the bucket
         """
         bucket_name = self.uri_parts.netloc
         return self._client.bucket(bucket_name)
@@ -49,8 +48,7 @@ class GCPCloudPath(CloudPath):
     @property
     def blob(self):
         """
-        Get the blob name
-        :return: Blob name
+        Get the blob  object
         """
         bucket = self.bucket
         blob_name = self.uri_parts.path.lstrip("/")
@@ -98,7 +96,7 @@ class GCPCloudPath(CloudPath):
         :param bucket_class:
         :return:
         """
-        bucket: Bucket = self.bucket
+        bucket = self.bucket
         if bucket.exists():
             return bucket
         bucket.storage_class = bucket_class
@@ -111,8 +109,7 @@ class GCPCloudPath(CloudPath):
         this function deletes a bucket from the google cloud storage
         :return:
         """
-        bucket: Bucket = self.bucket
-        print(bucket.exists())
+        bucket = self.bucket
         if not bucket.exists():
             return
         # List all objects in the bucket and delete each one
@@ -240,7 +237,6 @@ class GCPCloudPath(CloudPath):
         with tqdm(
             total=data_length, unit="B", unit_scale=True, desc="Uploading file"
         ) as progress_bar:
-
             for i in range(0, data_length, file_chunk_size):
                 chunk = data[i : i + file_chunk_size]
                 start_byte_index = i

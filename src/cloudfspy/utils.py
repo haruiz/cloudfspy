@@ -1,10 +1,11 @@
+import os
 import pathlib
 import re
+import typing
 from urllib.parse import urlparse
-import os
-from colorama import Fore, Style
 
-def get_uri_scheme(url) -> str or None:
+
+def get_uri_scheme(url) -> typing.Optional[str]:
     """
     Get the scheme from a URL.
     :param url:  URL
@@ -27,7 +28,7 @@ def is_valid_uri(uri: str) -> bool:
         result = urlparse(uri)
         # Check if the scheme and netloc are present
         return all([result.scheme, result.netloc])
-    except:
+    except:  # noqa
         return False
 
 
@@ -46,30 +47,35 @@ def rm_tree(pth):
     pth.rmdir()
 
 
-import os
-
 def ls_tree(startpath, max_levels, symbol="-", indent=0):
+    """
+    List the contents of a directory tree.
+    :param startpath:
+    :param max_levels:
+    :param symbol:
+    :param indent:
+    :return:
+    """
     if max_levels < 0:  # Base case to stop recursion
-        return ''
-    
-    output = ''
+        return ""
+
+    output = ""
     # Use the provided symbol as the indicator for each level
-    prefix = '    ' * indent + (symbol + ' ' if indent > 0 else '')
-    output += prefix + os.path.basename(startpath) + '\n'
-    prefix = '    ' * (indent + 1) + symbol + ' '
-    
+    prefix = "    " * indent + (symbol + " " if indent > 0 else "")
+    output += prefix + os.path.basename(startpath) + "\n"
+    prefix = "    " * (indent + 1) + symbol + " "
+
     if indent >= max_levels:  # Stop diving into directories if max depth is reached
         return output
-    
+
     try:
         for item in os.listdir(startpath):
             path = os.path.join(startpath, item)
             if os.path.isdir(path):
                 output += ls_tree(path, max_levels - 1, symbol, indent + 1)
             else:
-                output += prefix + item + '\n'
+                output += prefix + item + "\n"
     except PermissionError:
-        output += prefix + 'Permission denied' + '\n'
-    
-    return output
+        output += prefix + "Permission denied" + "\n"
 
+    return output

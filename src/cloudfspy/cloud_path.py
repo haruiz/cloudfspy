@@ -1,6 +1,7 @@
 import typing
 from pathlib import Path
-from typing import Dict, Callable
+from typing import Callable
+from typing import Dict
 from urllib.parse import urlparse
 
 from .any_path import AnyPath
@@ -9,6 +10,7 @@ from .settings import get_cache_folder
 
 if typing.TYPE_CHECKING:
     from .local_path import LocalPath
+    from .generic_path import GenericPath
 
 
 class CloudPathFactory:
@@ -80,7 +82,7 @@ class CloudPath(AnyPath):
             path_netloc, cloud_path_parts.path.lstrip("/")
         )
 
-        return super().__new__(cloud_path_cls, local_path, *args)
+        return super().__new__(cloud_path_cls, local_path, *args, **kwargs)  # type: ignore
 
     def __init__(self, cloud_path: str, *args, **kwargs):
         """
@@ -105,6 +107,22 @@ class CloudPath(AnyPath):
             raise ValueError("Parent path not found")
         cls = self.__class__
         return cls(parent_uri)
+
+    @property
+    def metadata(self):
+        """
+        Get metadata
+        :return: Metadata
+        """
+        raise NotImplementedError
+
+    @metadata.setter
+    def metadata(self, metadata: dict):
+        """
+        Set metadata
+        :param metadata: Metadata
+        """
+        raise NotImplementedError
 
     def joinpath(self, *other):
         """
@@ -133,7 +151,10 @@ class CloudPath(AnyPath):
         return self.uri_parts.scheme + "://"
 
     def download_to(
-        self, destination: typing.Union[str, "LocalPath"], *args, **kwargs
+        self,
+        destination: typing.Union[str, "GenericPath", "AnyPath", "LocalPath"],
+        *args,
+        **kwargs,
     ) -> "LocalPath":
         """
         Download a file to a destination.

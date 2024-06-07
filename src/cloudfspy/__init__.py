@@ -1,15 +1,16 @@
 import logging
 
-from dotenv import load_dotenv
-from rich.logging import RichHandler
+from rich.logging import RichHandler  # type: ignore
 
-from .cloud_path import CloudPath, CloudPathFactory
+from .cloud_path import CloudPath
+from .cloud_path import CloudPathFactory
 from .generic_path import GenericPath
 from .local_path import LocalPath
-from .settings import *
-from .vendors import *
+from .settings import clear_cache_folder
+from .settings import get_cache_folder
+from .settings import set_cache_folder
+from .vendors import GCPCloudPath
 
-load_dotenv()
 FORMAT = "%(message)s"
 logging.basicConfig(
     level=logging.INFO,
