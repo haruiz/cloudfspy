@@ -4,14 +4,12 @@
 
 `cloudfspy` is a Python library that offers a `pathlib`-style interface for interacting with various cloud storage services, including Amazon S3, Azure Blob Storage, and Google Cloud Storage. It provides a simple and consistent API, modeled after the `Path` class from the `pathlib` module, enabling seamless access and manipulation of files and folder in cloud storage. Currently, `cloudfspy` supports the following cloud storage services:
 
-* Google Cloud Storage (GCS)
-
 - [x] Google Cloud Storage (GCS)
-- [] Amazon S3
-- [] Azure Blob Storage
-- [] Dropbox
-- [] OneDrive
-- [] FTP/SFTP
+- [ ] Amazon S3
+- [ ] Azure Blob Storage
+- [ ] Dropbox
+- [ ] OneDrive
+- [ ] FTP/SFTP
 
 ## Installation
 
@@ -67,5 +65,3 @@ metadata = cloud_file.metadata
 
 # Set the metadata of a file
 cloud_file.metadata = {"description": "My file"}
-`
-
